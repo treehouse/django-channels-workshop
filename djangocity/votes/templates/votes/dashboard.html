@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+	<head>
+    	<title>DjangoCity Dashboard</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	</head>
+	<body>
+    	<div class="container">
+        	<table class="table">
+            	<thead>
+                	<tr>
+                    	<th>Voter</th>
+                    	<th>Housing</th>
+                    	<th>Parks</th>
+                    	<th>Schools</th>
+                    	<th>Public Safety</th>
+                	</tr>
+            	</thead>
+            	<tbody>
+                	{% for voter in voters %}
+                	<tr>
+                    	<td>{{  voter }}</td>
+                    	<td>Yes: <span class="js-{{ voter.id }}-housing-yes">0</span> No: <span class="js-{{ voter.id }}-housing-no">0</span></td>
+                    	<td>Yes: <span class="js-{{ voter.id }}-parks-yes">0</span> No: <span class="js-{{ voter.id }}-parks-no">0</span></td>
+                    	<td>Yes: <span class="js-{{ voter.id }}-schools-yes">0</span> No: <span class="js-{{ voter.id }}-schools-no">0</span></td>
+                    	<td>Yes: <span class="js-{{ voter.id }}-safety-yes">0</span> No: <span class="js-{{ voter.id }}-safety-no">0</span></td>
+                	</tr>
+                	{% endfor %}
+            	</tbody>
+        	</table>
+    	</div>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <script>
+            $(document).ready(function() {
+               socket = new WebSocket("ws://" + window.location.host);
+               socket.onmessage = function(e) {
+                   var data = JSON.parse(e.data);
+                   for (var voter in data) {
+                       for (var category in data[voter]) {
+                           $(".js-" + voter + "-" + category + "-yes").text(data[voter][category]['yes']);
+                           $(".js-" + voter + "-" + category + "-no").text(data[voter][category]['no']);
+                       }
+                   }
+               }
+            });
+        </script>
+	</body>
+</html>

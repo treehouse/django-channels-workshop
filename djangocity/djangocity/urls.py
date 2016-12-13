@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from votes.views import DashboardView
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^dashboard/$', DashboardView.as_view(), name='dashboard'),
 ]
